@@ -2,6 +2,18 @@
 
 Create these GitHub issues first so the project has a clean, durable backlog.
 
+## Highest-priority next work item
+
+- Title: `Upgrade alpha detail into paper-style replication cards`
+- Labels: `research`, `pipeline`, `ui`
+- Canonical work item doc: `docs/work_items/alpha-research-note-style.md`
+- Goal: turn alpha detail into a genuine research note with source-backed evidence, mapping, caveats, and upgrade guidance
+
+Supporting work items that can be split out if the main issue grows too large:
+
+- `Tighten evidence thresholds and route weak evidence to Idea Inbox`
+- `Add structured alpha detail schema for evidence, mapping, and caveats`
+
 ## 1. source-quality
 
 - Title: `Improve serious research source coverage and source-quality visibility`
