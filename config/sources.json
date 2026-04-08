@@ -1,0 +1,58 @@
+[
+  {
+    "name": "arXiv q-fin.MF",
+    "kind": "rss",
+    "url": "https://export.arxiv.org/rss/q-fin.MF",
+    "priority": 10,
+    "source_class": "research_paper"
+  },
+  {
+    "name": "arXiv q-fin.ST",
+    "kind": "rss",
+    "url": "https://export.arxiv.org/rss/q-fin.ST",
+    "priority": 10,
+    "source_class": "research_paper"
+  },
+  {
+    "name": "arXiv q-fin.PM",
+    "kind": "rss",
+    "url": "https://export.arxiv.org/rss/q-fin.PM",
+    "priority": 10,
+    "source_class": "research_paper"
+  },
+  {
+    "name": "arXiv q-fin.PR",
+    "kind": "rss",
+    "url": "https://export.arxiv.org/rss/q-fin.PR",
+    "priority": 10,
+    "source_class": "research_paper"
+  },
+  {
+    "name": "arXiv q-fin.RM",
+    "kind": "rss",
+    "url": "https://export.arxiv.org/rss/q-fin.RM",
+    "priority": 10,
+    "source_class": "research_paper"
+  },
+  {
+    "name": "Alpha Architect",
+    "kind": "rss",
+    "url": "https://alphaarchitect.com/feed/",
+    "priority": 8,
+    "source_class": "quant_blog"
+  },
+  {
+    "name": "Robot Wealth",
+    "kind": "rss",
+    "url": "https://robotwealth.com/feed/",
+    "priority": 8,
+    "source_class": "quant_blog"
+  },
+  {
+    "name": "Quantocracy",
+    "kind": "rss",
+    "url": "https://quantocracy.com/feed/",
+    "priority": 7,
+    "source_class": "aggregator"
+  }
+]

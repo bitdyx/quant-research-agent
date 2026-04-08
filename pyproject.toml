@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "quant-research-agent"
+version = "0.1.0"
+description = "Conservative daily quant research agent with SQLite memory and a local web dashboard."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "feedparser>=6.0.12",
+    "flask>=3.0.0",
+    "jinja2>=3.1.0",
+    "langgraph>=1.1.0",
+    "requests>=2.31.0",
+]
+
+[project.scripts]
+quant-research-agent = "quant_research_agent.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"quant_research_agent.web" = ["templates/*.html", "static/*.css"]
