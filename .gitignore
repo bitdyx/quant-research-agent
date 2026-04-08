@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Local databases and journals
+data/*.db
+data/*.db-journal
+data/*.sqlite3
+data/*.sqlite3-journal
+data/*test*.db
+data/*test*.sqlite3
+
+# Local exports and runtime artifacts
+data/reports/
+data/knowledge_exports/
+data/*.txt
+*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
