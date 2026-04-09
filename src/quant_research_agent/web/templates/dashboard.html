@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quant Research Agent</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">Q</div>
+        <div>
+          <div class="brand-title">Quant Research Agent</div>
+          <div class="brand-subtitle">Local research workbench</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="nav-link active" href="/">Dashboard</a>
+        <span class="nav-link muted">Daily Runs</span>
+        <span class="nav-link muted">Articles</span>
+        <span class="nav-link muted">Alpha Results</span>
+        <span class="nav-link muted">Run Detail</span>
+      </nav>
+      <div class="sidebar-note">
+        The legacy desktop viewer is still available via <code>run_agent.py open-gui</code>.
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="hero">
+        <div>
+          <h1>Research Dashboard</h1>
+          <p>Open the local workbench here. The default terminal entrypoint now targets this page instead of the old Tk viewer.</p>
+        </div>
+        <div class="hero-actions">
+          <button id="runDailyButton" class="primary-button">Run Daily Research</button>
+          <div id="statusBadge" class="status-badge {{ run_status.status }}">{{ run_status.status|capitalize }}</div>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <span class="stat-label">Articles in memory</span>
+          <span class="stat-value">{{ counts.article_count }}</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Stored alpha proposals</span>
+          <span class="stat-value">{{ counts.alpha_count }}</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Validation records</span>
+          <span class="stat-value">{{ counts.validation_count }}</span>
+        </article>
+      </section>
+
+      <section class="panel two-column">
+        <div class="card">
+          <div class="card-header">
+            <h2>Current Run Status</h2>
+            <span class="card-badge" id="currentStage">{{ run_status.current_stage or "idle" }}</span>
+          </div>
+          <div class="status-grid">
+            <div><span>Run date</span><strong id="runDate">{{ run_status.run_date or "-" }}</strong></div>
+            <div><span>Current article</span><strong id="currentArticle">{{ run_status.current_article or "-" }}</strong></div>
+            <div><span>Collected</span><strong id="collectedCount">{{ run_status.collected_count }}</strong></div>
+            <div><span>Selected</span><strong id="selectedCount">{{ run_status.selected_count }}</strong></div>
+            <div><span>Generated</span><strong id="generatedCount">{{ run_status.generated_alpha_count }}</strong></div>
+            <div><span>Validated</span><strong id="validatedCount">{{ run_status.validated_count }}</strong></div>
+          </div>
+          <p id="statusMessage" class="status-message">{{ run_status.message }}</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Latest Stored Run</h2>
+          </div>
+          {% if latest_run %}
+          <div class="latest-run-grid">
+            <div><span>Date</span><strong>{{ latest_run.run_date }}</strong></div>
+            <div><span>Status</span><strong>{{ latest_run.status }}</strong></div>
+            <div><span>Collected</span><strong>{{ latest_run.collected_count }}</strong></div>
+            <div><span>Selected</span><strong>{{ latest_run.selected_count }}</strong></div>
+            <div><span>Generated</span><strong>{{ latest_run.generated_alpha_count }}</strong></div>
+            <div><span>Validated</span><strong>{{ latest_run.validated_count }}</strong></div>
+          </div>
+          {% else %}
+          <p class="empty-state">No completed daily runs have been stored yet.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="panel two-column">
+        <div class="card log-card">
+          <div class="card-header">
+            <h2>Live Log</h2>
+            <span class="card-badge">polling</span>
+          </div>
+          <pre id="logStream" class="log-stream">{% for line in run_status.logs %}{{ line }}
+{% endfor %}</pre>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Recent Runs</h2>
+          </div>
+          <div class="list-stack">
+            {% if recent_runs %}
+              {% for run in recent_runs %}
+              <div class="list-item">
+                <div>
+                  <strong>{{ run.run_date }}</strong>
+                  <div class="muted-line">status={{ run.status }} | selected={{ run.selected_count }} | validated={{ run.validated_count }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="empty-state">No runs stored yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+
+      <section class="panel two-column">
+        <div class="card">
+          <div class="card-header">
+            <h2>Recent Articles</h2>
+          </div>
+          <div class="list-stack">
+            {% if recent_articles %}
+              {% for article in recent_articles %}
+              <div class="list-item">
+                <div>
+                  <strong>{{ article.title }}</strong>
+                  <div class="muted-line">{{ article.source_name }}{% if article.theme %} | {{ article.theme }}{% endif %}</div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="empty-state">No article history yet.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Recent Alpha Results</h2>
+          </div>
+          <div class="list-stack">
+            {% if recent_alphas %}
+              {% for alpha in recent_alphas %}
+              <div class="list-item">
+                <div>
+                  <strong>{{ alpha.title }}</strong>
+                  <div class="expression-line">{{ alpha.expression }}</div>
+                  <div class="muted-line">fitness={{ alpha.fitness }} | sharpe={{ alpha.sharpe }} | review={{ "pass" if alpha.passed_review else "hold" }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <p class="empty-state">No alpha results stored yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const runButton = document.getElementById("runDailyButton");
+    const statusBadge = document.getElementById("statusBadge");
+    const currentStage = document.getElementById("currentStage");
+    const runDate = document.getElementById("runDate");
+    const currentArticle = document.getElementById("currentArticle");
+    const collectedCount = document.getElementById("collectedCount");
+    const selectedCount = document.getElementById("selectedCount");
+    const generatedCount = document.getElementById("generatedCount");
+    const validatedCount = document.getElementById("validatedCount");
+    const statusMessage = document.getElementById("statusMessage");
+    const logStream = document.getElementById("logStream");
+
+    async function refreshStatus() {
+      const response = await fetch("/api/run-status");
+      const payload = await response.json();
+      statusBadge.textContent = (payload.status || "idle").replace(/^\w/, c => c.toUpperCase());
+      statusBadge.className = `status-badge ${payload.status || "idle"}`;
+      currentStage.textContent = payload.current_stage || "idle";
+      runDate.textContent = payload.run_date || "-";
+      currentArticle.textContent = payload.current_article || "-";
+      collectedCount.textContent = payload.collected_count ?? 0;
+      selectedCount.textContent = payload.selected_count ?? 0;
+      generatedCount.textContent = payload.generated_alpha_count ?? 0;
+      validatedCount.textContent = payload.validated_count ?? 0;
+      statusMessage.textContent = payload.message || "Ready.";
+      logStream.textContent = (payload.logs || []).join("\n");
+      logStream.scrollTop = logStream.scrollHeight;
+      runButton.disabled = Boolean(payload.running);
+      runButton.textContent = payload.running ? "Daily Research Running..." : "Run Daily Research";
+    }
+
+    runButton.addEventListener("click", async () => {
+      runButton.disabled = true;
+      const response = await fetch("/api/run-daily", { method: "POST" });
+      if (response.status === 409) {
+        const payload = await response.json();
+        statusMessage.textContent = payload.message || "A daily run is already in progress.";
+      }
+      await refreshStatus();
+    });
+
+    refreshStatus();
+    setInterval(refreshStatus, 2000);
+  </script>
+</body>
+</html>
