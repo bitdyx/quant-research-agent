@@ -1,38 +1,26 @@
 # GitHub Bootstrap Guide
 
-This project is ready to use GitHub as its collaboration hub, but two environment steps still depend on the local machine owner:
+This project now has the basic GitHub plumbing in place.
 
-1. restore the Codex GitHub plugin login
-2. create or choose the remote GitHub repository
+## Current state
 
-## 1. Restore GitHub access
+- local repo path: `D:\python\worldquant\quant_research_agent`
+- remote repo: `https://github.com/bitdyx/quant-research-agent`
+- default branch: `main`
+- first feature branch: `codex/alpha-research-note-style`
 
-Do this first so the GitHub plugin can read repositories, create issues, and open PRs again.
+## Operational notes
 
-- Re-authenticate the GitHub plugin in Codex
-- Confirm the token is no longer expired
-- Verify that repository listing works before moving on
+- The Codex GitHub connector is authenticated again and can read the repo when the transport layer is healthy.
+- Local `git push` from this machine still hits intermittent TLS failures.
+- Because of that, remote updates may temporarily use the GitHub connector as a fallback path instead of raw `git push`.
+- Runtime data must remain local and ignored:
+  - SQLite databases
+  - exported reports
+  - temporary test databases
+  - local logs
 
-## 2. Create the remote repository
-
-Recommended repository name:
-
-- `quant_research_agent`
-
-Suggested visibility:
-
-- private first, then change later if wanted
-
-## 3. Attach the local repository
-
-Run from `D:\python\worldquant\quant_research_agent` after the remote repo exists:
-
-```powershell
-git remote add origin <your-github-repo-url>
-git push -u origin main
-```
-
-## 4. Create the initial labels
+## Initial labels
 
 Recommended labels:
 
@@ -45,18 +33,23 @@ Recommended labels:
 - `memory`
 - `bug`
 
-## 5. Seed the first backlog
+## Backlog source of truth
 
-Use `docs/github_backlog_seed.md` as the source of truth for the first GitHub issues. Create those issues before starting the next implementation wave.
+Use these repository documents as the seed backlog until GitHub issue creation is stable again:
 
-## 6. Standard workflow after bootstrap
+- `docs/github_backlog_seed.md`
+- `docs/work_items/alpha-research-note-style.md`
 
-1. create or pick a GitHub issue
-2. create a `codex/...` branch
+Once direct GitHub issue creation is available, migrate those work items into GitHub and keep GitHub as the only active backlog.
+
+## Standard workflow
+
+1. create or select a backlog item
+2. create or reuse a `codex/...` branch
 3. implement locally
 4. open a draft PR
 5. validate locally
-6. mark PR ready and merge
+6. merge to `main`
 
 ## Notes
 
